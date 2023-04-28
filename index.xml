@@ -37,12 +37,176 @@
       <link>https://wangxupeng.github.io/project/example/</link>
       <pubDate>Thu, 27 Apr 2023 00:00:00 +0000</pubDate>
       <guid>https://wangxupeng.github.io/project/example/</guid>
-      <description>
+      <description>&lt;h2 id=&#34;__the-latest-version-of-table-recognition__&#34;&gt;&lt;strong&gt;The latest version of table recognition.&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
+  &lt;iframe src=&#34;https://www.youtube.com/embed/4f0EuFAXh8o&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; allowfullscreen title=&#34;YouTube Video&#34;&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The video mainly showcases a demo of complex and wireless tables. This project was developed in 2021, utilizing multimodal technology. In the following, we will introduce the technical details of the project.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;Complex_Table_Parsing.png&#34; srcset=&#34;
+               /project/example/Complex_Table_Parsing_hu24bf84fb50547cf52272ee0652e97388_26790_f724eede6c5c1a4d57f33477508965c7.webp 400w,
+               /project/example/Complex_Table_Parsing_hu24bf84fb50547cf52272ee0652e97388_26790_dcc286e4005bd7eae1475f9606b954bf.webp 760w,
+               /project/example/Complex_Table_Parsing_hu24bf84fb50547cf52272ee0652e97388_26790_1200x1200_fit_q75_h2_lanczos_3.webp 1200w&#34;
+               src=&#34;https://wangxupeng.github.io/project/example/Complex_Table_Parsing_hu24bf84fb50547cf52272ee0652e97388_26790_f724eede6c5c1a4d57f33477508965c7.webp&#34;
+               width=&#34;760&#34;
+               height=&#34;319&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+The overall project is divided into two stages. In the first stage, the image is input into the OCR model to obtain the coordinate information (bounding boxes) and corresponding text content. Then, the text positions are sorted from top to bottom and left to right based on the coordinate information. The input of the second stage includes the coordinate information and content of the text, as well as the sorted text positions information, and the output is the &lt;strong&gt;tree structure of the table&lt;/strong&gt;. As for what the tree structure of the table is, I will explain it later.&lt;/p&gt;
+&lt;h4 id=&#34;first-stage&#34;&gt;First stage&lt;/h4&gt;
+&lt;p&gt;The first stage used the DBnet[1]+CRNN[2] model, which needs no further elaboration.&lt;/p&gt;
+&lt;h4 id=&#34;second-stage&#34;&gt;Second stage&lt;/h4&gt;
+&lt;p&gt;In the training data, we already have annotated text box coordinates, text content, and the sorting information of text boxes from top to bottom and from left to right, as shown in the following figure:&lt;br&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;sorted_text_bounding_box.png&#34; srcset=&#34;
+               /project/example/sorted_text_bounding_box_hu7bc6c5e6b02cf31bf698024efbfe1cfb_224987_58c0f1e64cd107decf93ec0e5d4a7dc8.webp 400w,
+               /project/example/sorted_text_bounding_box_hu7bc6c5e6b02cf31bf698024efbfe1cfb_224987_701ba7a7df75ea38b6e029dad1021823.webp 760w,
+               /project/example/sorted_text_bounding_box_hu7bc6c5e6b02cf31bf698024efbfe1cfb_224987_1200x1200_fit_q75_h2_lanczos_3.webp 1200w&#34;
+               src=&#34;https://wangxupeng.github.io/project/example/sorted_text_bounding_box_hu7bc6c5e6b02cf31bf698024efbfe1cfb_224987_58c0f1e64cd107decf93ec0e5d4a7dc8.webp&#34;
+               width=&#34;760&#34;
+               height=&#34;199&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+As shown in the above figure, &lt;strong&gt;there may be two special cases during the sorting process. In the process of reorganizing the table structure, empty text boxes may be required and they are marked with the label number 0. Secondly, in the case of multiple lines of text appearing in a table cell, two rows of text boxes will appear, which need to be sorted from top to bottom.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;Complex_Table_Parsing_left.png&#34; srcset=&#34;
+               /project/example/Complex_Table_Parsing_left_hu7d3b8ec094b2dc9fb929b4aad2ab0917_16674_9300c64247210f11f68d5f525d888d22.webp 400w,
+               /project/example/Complex_Table_Parsing_left_hu7d3b8ec094b2dc9fb929b4aad2ab0917_16674_fd56d466d8fbb5b65ce2f8044337a475.webp 760w,
+               /project/example/Complex_Table_Parsing_left_hu7d3b8ec094b2dc9fb929b4aad2ab0917_16674_1200x1200_fit_q75_h2_lanczos_3.webp 1200w&#34;
+               src=&#34;https://wangxupeng.github.io/project/example/Complex_Table_Parsing_left_hu7d3b8ec094b2dc9fb929b4aad2ab0917_16674_9300c64247210f11f68d5f525d888d22.webp&#34;
+               width=&#34;760&#34;
+               height=&#34;250&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+After introducing the input data, let&amp;rsquo;s take a look at the left part of the model. We input the bounding boxes and the index for sorting bounding boxes into PointerNet[3]. PointerNet[3] proposes a novel neural network architecture, called Pointer Networks, which is able to generate pointers to input sequences based on the relationship between the input sequence and target sequence. The main application of Pointer Networks is to solve problems with sequential structure, such as sequence-to-sequence translation and path planning. Compared to traditional recurrent neural networks (RNNs) or convolutional neural networks (CNNs), Pointer Networks have better expressive power and significant advantages in terms of computational efficiency.It is very appropriate to use PointerNet[3] here to predict the tree structure of the table.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Next comes the important step of defining the label.&lt;/strong&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;label_father.png&#34; srcset=&#34;
+               /project/example/label_father_hud4eda2a4ee8b2acec81c8dffba21e7af_233137_c941856ba2a332786543a315bf010b69.webp 400w,
+               /project/example/label_father_hud4eda2a4ee8b2acec81c8dffba21e7af_233137_c06505a83d0c89d8f73e055af5c1b2d4.webp 760w,
+               /project/example/label_father_hud4eda2a4ee8b2acec81c8dffba21e7af_233137_1200x1200_fit_q75_h2_lanczos_3.webp 1200w&#34;
+               src=&#34;https://wangxupeng.github.io/project/example/label_father_hud4eda2a4ee8b2acec81c8dffba21e7af_233137_c941856ba2a332786543a315bf010b69.webp&#34;
+               width=&#34;760&#34;
+               height=&#34;247&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+Using the previous image as an example, we can see that each cell in the table has a parent cell that it points to in the upward direction. We refer to the cell being pointed to as the parent node. It can be observed that the parent nodes for all the topmost cells, i.e., cells 0, 1, 3, and 4, are -1. The parent nodes for cells 6, 8, 9, and 10 are 0, 2, 3, and 5, respectively.&lt;/p&gt;
+&lt;p&gt;The right side of the model mainly involves inputting the text content into the Bert[4], and then concatenating the output tensor with the tensor output from PointerNet.&lt;/p&gt;
+&lt;p&gt;Okay, now let&amp;rsquo;s take a look at what the input and output are for the entire second stage.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Input_1&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;6&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;7&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;8&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;9&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;10&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Input_2&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;corresponding&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;bounding&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;boxes&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Input_3&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;corresponding&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;text&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;content&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;output&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;6&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This is just the label for the bottom-up direction. We have applied similar labeling for all four directions, as shown in the following figure:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;all_label.jpg&#34; srcset=&#34;
+               /project/example/all_label_hu25a289d26af4e4bced36bbddf879dbb4_41959_4388700d45b74e79519ab8b3773a2334.webp 400w,
+               /project/example/all_label_hu25a289d26af4e4bced36bbddf879dbb4_41959_c366ec1bb18d06f6b07b2734d806b8f4.webp 760w,
+               /project/example/all_label_hu25a289d26af4e4bced36bbddf879dbb4_41959_1200x1200_fit_q75_h2_lanczos.webp 1200w&#34;
+               src=&#34;https://wangxupeng.github.io/project/example/all_label_hu25a289d26af4e4bced36bbddf879dbb4_41959_4388700d45b74e79519ab8b3773a2334.webp&#34;
+               width=&#34;563&#34;
+               height=&#34;760&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;After our repeated experiments, we found that using the bottom-up labeling scheme can solve 98% of the problems in our project. We used this approach to participate in the ICDAR 2021 competition on scientific literature parsing taskB: table recognition to HTML and achieved the 12th place.&lt;/strong&gt;&lt;/p&gt;
+&lt;h2 id=&#34;__the-earlier-version-of-table-recognition__&#34;&gt;&lt;strong&gt;The earlier version of table recognition.&lt;/strong&gt;&lt;/h2&gt;
+
 &lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
   &lt;iframe src=&#34;https://www.youtube.com/embed/WXMCj7c9NHc&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; allowfullscreen title=&#34;YouTube Video&#34;&gt;&lt;/iframe&gt;
 &lt;/div&gt;
 
-&lt;h2 id=&#34;the-first-version-of-table-recognition&#34;&gt;The first version of table recognition.&lt;/h2&gt;
 &lt;!--在上述视频中，展示了我所设计的表格识别的最初版本。该方法主要是基于DBnet实现的，在图像中检测出需要提取的表格部分的文字坐标，并根据这些坐标将对应文字图像切分出来。随后，将这些文字图像输入CRNN进行文字识别。最后，通过一些后处理操作，将表格的样式还原出来。在使用这个系统时，需要输入表格的行数和列数，以便于在前端进行展示。--&gt;
 &lt;p&gt;The above video demonstrates the initial version of my designed table recognition system (The content in this video was produced in 2021, but the technical implementation was achieved around 2018). The approach mainly relies on the implementation of DBnet[1] to detect the coordinates of the text within the table that needs to be extracted from the image. Based on these coordinates, the corresponding text images are sliced out. Subsequently, these text images are input into CRNN[2] for text recognition. Finally, some post-processing operations are applied to restore the style of the table. When using this system, the number of rows and columns of the table need to be inputted for display purposes in the frontend.&lt;/p&gt;
 &lt;!--在别的版本里，由于客户的需求，我们也做了一点改进，客户需要在鼠标点击文字的时候能在图片上高亮显示文字。于是在CRNN[2]后处理上做了一些改进。代码如下：--&gt;
@@ -147,9 +311,11 @@
 &lt;p&gt;If the predicted text is longer than two characters, the code adjusts the position of each character to account for overlap with adjacent characters. Specifically, the code updates the left or right boundary of the current or adjacent characters to ensure that there is no overlap. Finally, the code draws a rectangle around each recognized character.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;This project, along with related OCR technology, helped my first company Shenzhen Huayun Zhongsheng Technology win the project from the Guangdong Provincial Prosecutor&amp;rsquo;s Office.&lt;/strong&gt; Looking back at my code from 2018, I realize how immature it was at the time and how much room for optimization there was.&lt;/p&gt;
 &lt;hr&gt;
-&lt;p&gt;&lt;strong&gt;Reference&lt;/strong&gt;:
-[1] Liao, M., Zhu, X., &amp;amp; Shi, B. (2020). Real-time Scene Text Detection with Differentiable Binarization. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR) (pp. 12065-12074).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Reference&lt;/strong&gt;:&lt;/p&gt;
+&lt;p&gt;[1] Liao, M., Zhu, X., &amp;amp; Shi, B. (2020). Real-time Scene Text Detection with Differentiable Binarization. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR) (pp. 12065-12074).&lt;/p&gt;
 &lt;p&gt;[2] Shi, B., Bai, X., &amp;amp; Yao, C. (2017). An end-to-end trainable neural network for image-based sequence recognition and its application to scene text recognition. IEEE Transactions on Pattern Analysis and Machine Intelligence, 39(11), 2298-2304.&amp;quot;&lt;/p&gt;
+&lt;p&gt;[3]Vinyals, O., Fortunato, M., &amp;amp; Jaitly, N. (2015). Pointer networks. In Advances in neural information processing systems (pp. 2692-2700).&lt;/p&gt;
+&lt;p&gt;[4]Devlin, J., Chang, M. W., Lee, K., &amp;amp; Toutanova, K. (2018). Bert: Pre-training of deep bidirectional transformers for language understanding. arXiv preprint arXiv:1810.04805.&lt;/p&gt;
 </description>
     </item>
     
@@ -337,7 +503,7 @@ data.head()
 
 
 
-&lt;div id=&#34;chart-613247985&#34; class=&#34;chart&#34;&gt;&lt;/div&gt;
+&lt;div id=&#34;chart-384795621&#34; class=&#34;chart&#34;&gt;&lt;/div&gt;
 &lt;script&gt;
   (function() {
     let a = setInterval( function() {
@@ -347,7 +513,7 @@ data.head()
       clearInterval( a );
 
       Plotly.d3.json(&#34;./line-chart.json&#34;, function(chart) {
-        Plotly.plot(&#39;chart-613247985&#39;, chart.data, chart.layout, {responsive: true});
+        Plotly.plot(&#39;chart-384795621&#39;, chart.data, chart.layout, {responsive: true});
       });
     }, 500 );
   })();
