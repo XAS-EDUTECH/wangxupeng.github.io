@@ -299,5 +299,304 @@ Using the previous image as an example, we can see that each cell in the table h
 </description>
     </item>
     
+    <item>
+      <title>Legal AI Challenge: Legal Case Element Recognition solution.</title>
+      <link>https://wangxupeng.github.io/project/legal-ai-challenge/</link>
+      <pubDate>Thu, 27 Apr 2023 00:00:00 +0000</pubDate>
+      <guid>https://wangxupeng.github.io/project/legal-ai-challenge/</guid>
+      <description>&lt;h2 id=&#34;__task-introduction__&#34;&gt;&lt;strong&gt;Task Introduction&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;The main objective of this task is to automatically extract important factual descriptions from case descriptions, and classify them according to a case element system designed by domain experts. Essentially, it is a short-text multilabel classification problem.&lt;/p&gt;
+&lt;p&gt;The results of case element extraction can be used in practical business requirements in the judicial field, such as case summaries, explainable case recommendations, and related knowledge recommendations.&lt;/p&gt;
+&lt;p&gt;Specifically, given relevant paragraphs in judicial documents, the system needs to judge each sentence in the document and identify the key case elements.&lt;/p&gt;
+&lt;p&gt;This task involves three domains, including marriage and family, labor disputes, and loan contracts.&lt;/p&gt;
+&lt;h2 id=&#34;__data-introduction__&#34;&gt;&lt;strong&gt;Data Introduction&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;The dataset used for this task mainly comes from the publicly available legal documents on the &amp;lsquo;China Judgments Online&amp;rsquo; website. Each training data consists of a segment of the case description from a legal document, where each sentence has been labeled with corresponding category tags (it should be noted that the number of category tags for each sentence is not fixed). For example:&lt;/p&gt;
+&lt;p&gt;{&amp;ldquo;labels&amp;rdquo;: [&amp;ldquo;DV9&amp;rdquo;, &amp;ldquo;DV1&amp;rdquo;, &amp;ldquo;DV2&amp;rdquo;], &amp;ldquo;sentence&amp;rdquo;: &amp;ldquo;The plaintiff Xie Chunyou claimed that the plaintiff and defendant divorced in March 2014 due to emotional discord as ruled by the Hengyang County People&amp;rsquo;s Court, and ruled that their daughter Zhou Yin (born on September 8, 2001, now studying at Zhengyang Middle School, Xidu Town, Hengyang County) would be raised by the defendant.&amp;rdquo;}; DV represents the divorce category.&lt;/p&gt;
+&lt;p&gt;{&amp;ldquo;labels&amp;rdquo;: [&amp;ldquo;LB2&amp;rdquo;, &amp;ldquo;LB3&amp;rdquo;], &amp;ldquo;sentence&amp;rdquo;: &amp;ldquo;The plaintiff Zhang Qian filed a lawsuit with the court and requested: 1. To order the defendant to make up the plaintiff&amp;rsquo;s salary of 7200 yuan and compensation of 2400 yuan.&amp;rdquo;}; LB represents the labor category.&lt;/p&gt;
+&lt;p&gt;{&amp;ldquo;labels&amp;rdquo;: [&amp;ldquo;LN2&amp;rdquo;, &amp;ldquo;LN6&amp;rdquo;, &amp;ldquo;LN4&amp;rdquo;], &amp;ldquo;sentence&amp;rdquo;: &amp;ldquo;This court finds the facts as follows: The defendant&amp;rsquo;s brothers holdings group limited company borrowed three loans from the Industrial and Commercial Bank of China Yongkang Branch, with a total principal of RMB 40 million, as follows:&amp;rdquo;}; LN represents the loan category.&lt;/p&gt;
+&lt;h4 id=&#34;label-contents-are-as-follows&#34;&gt;Label contents are as follows:&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Divorce&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Children born during marriage&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Child custody for children with limited capacity for civil conduct&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Common property of husband and wife&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Payment of child support&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Division of real estate&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Separation after marriage&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Divorce for the second time&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Monthly payment of child support&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Granting of divorce&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Common debt of husband and wife&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Personal property before marriage&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Statutory divorce&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Failure to perform family obligations&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Existence of illegitimate child&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Proper assistance&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Failure to fulfill divorce agreement&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Compensation for damages&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Living separately for more than two years due to emotional discord&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Children living with non-custodial parent&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Personal property after marriage&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Labor&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Termination of Labor Relationship&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Payment of Wages&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Payment of Economic Compensation&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Unpaid Full Labor Remuneration&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Existence of Labor Relationship&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;No Labor Contract Signed&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Signed Labor Contract&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Payment of Overtime Pay&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Payment of Double Wages Compensation for No Signed Labor Contract&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Payment of Work-Related Injury Compensation&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;No Labor Arbitration Filed&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Refusal to Pay Illegal Termination Compensation&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Economic Layoff&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;No Payment of Bonuses&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Illegally Collecting Property from Employees&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Special Job Categories&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Payment of Subsidies for Work Injury, Funeral or Bereavement&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Advance Notification of Termination by Employer&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Legal Person Status Ceased&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Agreement Reached through Mediation&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Loan&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Transfer of creditor&amp;#39;s rights&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Loan amount of x thousand yuan&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Loan certificate available&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Lender is a financial institution&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Repayment of loan&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Loan borrowed by company|unit|other organization&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Joint guarantee&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Reminder for repayment&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Payment of interest&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Establishment of guarantee contract&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Written promise of repayment available&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Invalid|revoked|terminated guarantee contract&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Refusal to perform repayment&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Release of guarantor&amp;#39;s guarantee responsibility&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Guarantor not assuming guarantee responsibility&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Pledgor is a company&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Lender fails to provide loan as agreed in terms of date or amount&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Loan borrowed by multiple individuals&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Transfer of debt by debtor&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Unclear agreed interest rate&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;split-multi-labels-into-single-labels-and-then-count&#34;&gt;Split multi-labels into single labels and then count:&lt;/h4&gt;
+&lt;p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;data_distribution.png&#34; srcset=&#34;
+               /project/legal-ai-challenge/data_distribution_hud41c0f75838ed97a017c298dab22d512_47089_f72577336bef5d51e18cc02b4f84a53b.webp 400w,
+               /project/legal-ai-challenge/data_distribution_hud41c0f75838ed97a017c298dab22d512_47089_c28838472ba0f0ebac6e60487f318c3d.webp 760w,
+               /project/legal-ai-challenge/data_distribution_hud41c0f75838ed97a017c298dab22d512_47089_1200x1200_fit_q75_h2_lanczos_3.webp 1200w&#34;
+               src=&#34;https://wangxupeng.github.io/project/legal-ai-challenge/data_distribution_hud41c0f75838ed97a017c298dab22d512_47089_f72577336bef5d51e18cc02b4f84a53b.webp&#34;
+               width=&#34;715&#34;
+               height=&#34;756&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;We can see that the marriage and family category accounts for 22% of the elements. Labor disputes category accounts for 11% of the elements. Loan contracts category accounts for 15% of the elements. Most of the sentences do not have relevant element information.&lt;/p&gt;
+&lt;h4 id=&#34;the-distribution-of-data-for-the-top-20-categories-of-marriage-and-family&#34;&gt;The distribution of data for the top 20 categories of marriage and family:&lt;/h4&gt;
+&lt;p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;top20.jpg&#34; srcset=&#34;
+               /project/legal-ai-challenge/top20_huad3fd0a99ce000b3476ad8a542f65548_66762_f72add75c10e192d46dd6bc2c67212c0.webp 400w,
+               /project/legal-ai-challenge/top20_huad3fd0a99ce000b3476ad8a542f65548_66762_af76d316a65e6f7a4ab6eaf88fdece28.webp 760w,
+               /project/legal-ai-challenge/top20_huad3fd0a99ce000b3476ad8a542f65548_66762_1200x1200_fit_q75_h2_lanczos.webp 1200w&#34;
+               src=&#34;https://wangxupeng.github.io/project/legal-ai-challenge/top20_huad3fd0a99ce000b3476ad8a542f65548_66762_f72add75c10e192d46dd6bc2c67212c0.webp&#34;
+               width=&#34;760&#34;
+               height=&#34;515&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
+&lt;h4 id=&#34;the-distribution-of-data-for-the-top-20-categories-of-labor-disputes&#34;&gt;The distribution of data for the top 20 categories of labor disputes:&lt;/h4&gt;
+&lt;p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;label_top20.jpg&#34; srcset=&#34;
+               /project/legal-ai-challenge/label_top20_hu326a73d29f245d94fe34910bedd4aed8_78409_60fdc62d17d2b55c91b2f986bea42c52.webp 400w,
+               /project/legal-ai-challenge/label_top20_hu326a73d29f245d94fe34910bedd4aed8_78409_cf30d90534de6a01590d653f8c612dc4.webp 760w,
+               /project/legal-ai-challenge/label_top20_hu326a73d29f245d94fe34910bedd4aed8_78409_1200x1200_fit_q75_h2_lanczos.webp 1200w&#34;
+               src=&#34;https://wangxupeng.github.io/project/legal-ai-challenge/label_top20_hu326a73d29f245d94fe34910bedd4aed8_78409_60fdc62d17d2b55c91b2f986bea42c52.webp&#34;
+               width=&#34;760&#34;
+               height=&#34;449&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
+&lt;h4 id=&#34;the-distribution-of-data-for-the-top-20-categories-of-loan-contracts&#34;&gt;The distribution of data for the top 20 categories of loan contracts:&lt;/h4&gt;
+&lt;p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;loan_top20.jpg&#34; srcset=&#34;
+               /project/legal-ai-challenge/loan_top20_hu4a7cd7f0ec3336dbfecd47f6f703e916_69692_14b9cccfd3102c3d6636c919fd7d76bb.webp 400w,
+               /project/legal-ai-challenge/loan_top20_hu4a7cd7f0ec3336dbfecd47f6f703e916_69692_8ed61748f6874ea514a7466559cd0764.webp 760w,
+               /project/legal-ai-challenge/loan_top20_hu4a7cd7f0ec3336dbfecd47f6f703e916_69692_1200x1200_fit_q75_h2_lanczos.webp 1200w&#34;
+               src=&#34;https://wangxupeng.github.io/project/legal-ai-challenge/loan_top20_hu4a7cd7f0ec3336dbfecd47f6f703e916_69692_14b9cccfd3102c3d6636c919fd7d76bb.webp&#34;
+               width=&#34;760&#34;
+               height=&#34;510&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;From the above three graphs, it can be seen that &lt;strong&gt;the data follows a severe long-tailed distribution&lt;/strong&gt;. After reviewing numerous papers, we found that label embedding can effectively solve this problem.&lt;/p&gt;
+&lt;p&gt;After reviewing many papers, we finally found inspiration from joint label-text embeddings[1] and achieved good results.&lt;/p&gt;
+&lt;p&gt;Next, let&amp;rsquo;s take a look at the model&amp;rsquo;s input and labels.&lt;/p&gt;
+&lt;p&gt;In the model input, we not only input the text but also add the corresponding category labels into Bert[2] (the final model is XLnet[3]), as follows:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CLS&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Plaintiff&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Xie&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Chunyou&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;alleges&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;that&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;the&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;plaintiff&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;and&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;defendant&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;divorced&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;due&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;to&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;emotional&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;discord&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;March&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2014&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;and&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;the&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;court&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;of&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Hengyang&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;County&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ruled&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;that&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;the&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;girl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Zhou&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Yin&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;born&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;on&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;September&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2001&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;now&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;studying&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;at&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Zhengyang&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Middle&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;School&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Xidu&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Town&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Hengyang&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;County&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;born&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;of&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;the&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;marriage&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;should&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;be&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;raised&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;by&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;the&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;defendant&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SEP&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Having&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Children&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;After&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Marriage&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;...&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Personal&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Property&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;After&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Marriage&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SEP&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Labels: One-hot encoding is performed on different labels.&lt;/p&gt;
+&lt;h4 id=&#34;model-structure&#34;&gt;Model structure&lt;/h4&gt;
+&lt;p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;model_structure.png&#34; srcset=&#34;
+               /project/legal-ai-challenge/model_structure_hue9d671a6d28c0d937028ea1c676b83d7_57985_5e72aa29a201d1c7c1b1f2cf2d5ede94.webp 400w,
+               /project/legal-ai-challenge/model_structure_hue9d671a6d28c0d937028ea1c676b83d7_57985_87fc61842fe1a2f19239337be7e67edf.webp 760w,
+               /project/legal-ai-challenge/model_structure_hue9d671a6d28c0d937028ea1c676b83d7_57985_1200x1200_fit_q75_h2_lanczos_3.webp 1200w&#34;
+               src=&#34;https://wangxupeng.github.io/project/legal-ai-challenge/model_structure_hue9d671a6d28c0d937028ea1c676b83d7_57985_5e72aa29a201d1c7c1b1f2cf2d5ede94.webp&#34;
+               width=&#34;760&#34;
+               height=&#34;326&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;model_structure2.png&#34; srcset=&#34;
+               /project/legal-ai-challenge/model_structure2_hu20ca55535ff00e6d92702bc31758c826_27028_628800ed57773484ffface7c5f6e6c92.webp 400w,
+               /project/legal-ai-challenge/model_structure2_hu20ca55535ff00e6d92702bc31758c826_27028_010686fb4e14a080ca7b525fc3592ec2.webp 760w,
+               /project/legal-ai-challenge/model_structure2_hu20ca55535ff00e6d92702bc31758c826_27028_1200x1200_fit_q75_h2_lanczos_3.webp 1200w&#34;
+               src=&#34;https://wangxupeng.github.io/project/legal-ai-challenge/model_structure2_hu20ca55535ff00e6d92702bc31758c826_27028_628800ed57773484ffface7c5f6e6c92.webp&#34;
+               width=&#34;760&#34;
+               height=&#34;154&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;The following is a comparison between the results with and without the use of label embedding.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;plus_label_embedding.jpg&#34; srcset=&#34;
+               /project/legal-ai-challenge/plus_label_embedding_hudba42a2d1e0b1faf77a4ae73d90fcfb7_152730_5b92204dc45936832a6f73c7db5ce0e5.webp 400w,
+               /project/legal-ai-challenge/plus_label_embedding_hudba42a2d1e0b1faf77a4ae73d90fcfb7_152730_542374f85783fbb5e01005d3685a8524.webp 760w,
+               /project/legal-ai-challenge/plus_label_embedding_hudba42a2d1e0b1faf77a4ae73d90fcfb7_152730_1200x1200_fit_q75_h2_lanczos.webp 1200w&#34;
+               src=&#34;https://wangxupeng.github.io/project/legal-ai-challenge/plus_label_embedding_hudba42a2d1e0b1faf77a4ae73d90fcfb7_152730_5b92204dc45936832a6f73c7db5ce0e5.webp&#34;
+               width=&#34;760&#34;
+               height=&#34;372&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+As we can see, the addition of label embedding has significantly improved the performance.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;strong&gt;Reference&lt;/strong&gt;:
+[1]M. Bilenko and R. Mooney, “Joint embeddings of text and labels for multi-label classification,” in Proceedings of the 26th Annual International Conference on Machine Learning, 2003, pp. 89–96.&lt;/p&gt;
+&lt;p&gt;[2]Devlin, J., Chang, M. W., Lee, K., &amp;amp; Toutanova, K. (2018). Bert: Pre-training of deep bidirectional transformers for language understanding. arXiv preprint arXiv:1810.04805.&lt;/p&gt;
+&lt;p&gt;[3]Yang, Z., Dai, Z., Yang, Y., Carbonell, J. G., Salakhutdinov, R. R., &amp;amp; Le, Q. V. (2019). XLNet: Generalized Autoregressive Pretraining for Language Understanding. arXiv preprint arXiv:1906.08237.&lt;/p&gt;
+</description>
+    </item>
+    
   </channel>
 </rss>
