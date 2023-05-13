@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- This site was created with Wowchemy. https://www.wowchemy.com -->
-<!-- Last Published: April 28, 2023 --><html lang="en-us" >
+<!-- Last Published: May 13, 2023 --><html lang="en-us" >
 
 
 <head>
@@ -972,7 +972,7 @@
   </div></figure>
 </p>
 <p>From the above three graphs, it can be seen that <strong>the data follows a severe long-tailed distribution</strong>. After reviewing numerous papers, we found that label embedding can effectively solve this problem.</p>
-<p>After reviewing many papers, we finally found inspiration from joint label-text embeddings[1] and achieved good results.</p>
+<p>After reviewing many papers, we finally found inspiration from joint label embeddings[1] and achieved good results.</p>
 <p>Next, let&rsquo;s take a look at the model&rsquo;s input and labels.</p>
 <p>In the model input, we not only input the text but also add the corresponding category labels into Bert[2] (the final model is XLnet[3]), as follows:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="p">[</span><span class="n">CLS</span><span class="p">]</span> <span class="n">Plaintiff</span> <span class="n">Xie</span> <span class="n">Chunyou</span> <span class="n">alleges</span> <span class="n">that</span> <span class="n">the</span> <span class="n">plaintiff</span> <span class="ow">and</span> <span class="n">defendant</span> <span class="n">divorced</span> <span class="n">due</span> <span class="n">to</span> <span class="n">emotional</span> <span class="n">discord</span> <span class="ow">in</span> <span class="n">March</span> <span class="mi">2014</span><span class="p">,</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">court</span> <span class="n">of</span> <span class="n">Hengyang</span> <span class="n">County</span> <span class="n">ruled</span> <span class="n">that</span> <span class="n">the</span> <span class="n">girl</span> <span class="n">Zhou</span> <span class="n">Yin</span> <span class="p">(</span><span class="n">born</span> <span class="n">on</span> <span class="n">September</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">2001</span><span class="p">,</span> <span class="n">now</span> <span class="n">studying</span> <span class="n">at</span> <span class="n">Zhengyang</span> <span class="n">Middle</span> <span class="n">School</span> <span class="ow">in</span> <span class="n">Xidu</span> <span class="n">Town</span><span class="p">,</span> <span class="n">Hengyang</span> <span class="n">County</span><span class="p">)</span> <span class="n">born</span> <span class="n">of</span> <span class="n">the</span> <span class="n">marriage</span> <span class="n">should</span> <span class="n">be</span> <span class="n">raised</span> <span class="n">by</span> <span class="n">the</span> <span class="n">defendant</span><span class="o">.</span> <span class="p">[</span><span class="n">SEP</span><span class="p">]</span> <span class="p">(</span><span class="n">Having</span> <span class="n">Children</span> <span class="n">After</span> <span class="n">Marriage</span><span class="p">)</span><span class="o">...</span><span class="p">(</span><span class="n">Personal</span> <span class="n">Property</span> <span class="n">After</span> <span class="n">Marriage</span><span class="p">)[</span><span class="n">SEP</span><span class="p">]</span>
@@ -1084,10 +1084,10 @@ As we can see, the addition of label embedding has significantly improved the pe
 <figure  >
   <div class="d-flex justify-content-center">
     <div class="w-100" ><img alt="hua.png" srcset="
-               /project/legal-ai-challenge/hua_hu47f0d30799510983acda49a3523c070e_80184_1f941f2856fa7527032ceeba961b713d.webp 400w,
+               /project/legal-ai-challenge/hua_hu47f0d30799510983acda49a3523c070e_80184_4543ce492f6cec26519e2d8f48371789.webp 400w,
                /project/legal-ai-challenge/hua_hu47f0d30799510983acda49a3523c070e_80184_5d08d59e8926a6582fe057fd02885450.webp 760w,
                /project/legal-ai-challenge/hua_hu47f0d30799510983acda49a3523c070e_80184_1200x1200_fit_q75_h2_lanczos_3.webp 1200w"
-               src="/project/legal-ai-challenge/hua_hu47f0d30799510983acda49a3523c070e_80184_1f941f2856fa7527032ceeba961b713d.webp"
+               src="/project/legal-ai-challenge/hua_hu47f0d30799510983acda49a3523c070e_80184_4543ce492f6cec26519e2d8f48371789.webp"
                width="760"
                height="567"
                loading="lazy" data-zoomable /></div>
@@ -1113,19 +1113,20 @@ As we can see, the addition of label embedding has significantly improved the pe
 <figure  >
   <div class="d-flex justify-content-center">
     <div class="w-100" ><img alt="photo.jpg" srcset="
-               /project/legal-ai-challenge/photo_hu778af1ec36bb3279dad62320ccebc55b_105563_459a7a3c279aef4d5e36b4476e016f66.webp 400w,
+               /project/legal-ai-challenge/photo_hu778af1ec36bb3279dad62320ccebc55b_105563_2bab771ee2087aded539f8af24242237.webp 400w,
                /project/legal-ai-challenge/photo_hu778af1ec36bb3279dad62320ccebc55b_105563_a6b829c960159333ca207894b9e65d97.webp 760w,
                /project/legal-ai-challenge/photo_hu778af1ec36bb3279dad62320ccebc55b_105563_1200x1200_fit_q75_h2_lanczos.webp 1200w"
-               src="/project/legal-ai-challenge/photo_hu778af1ec36bb3279dad62320ccebc55b_105563_459a7a3c279aef4d5e36b4476e016f66.webp"
+               src="/project/legal-ai-challenge/photo_hu778af1ec36bb3279dad62320ccebc55b_105563_2bab771ee2087aded539f8af24242237.webp"
                width="570"
                height="760"
                loading="lazy" data-zoomable /></div>
   </div></figure>
 
 Thanks to the award we received, I caught the attention of the CEO and CTO of Nanjing Aerospace Smart Technology Co., Ltd. Eventually, I was invited to join the Aerospace Science and Technology AI Laboratory. Looking back, it was an amazing experience.</p>
+<p>Project github: <a href="https://github.com/wangxupeng/2019Legal-AI-Challenge-Legal-Case-Element-Recognition-solution" target="_blank" rel="noopener">https://github.com/wangxupeng/2019Legal-AI-Challenge-Legal-Case-Element-Recognition-solution</a></p>
 <hr>
 <p><strong>Reference</strong>:
-[1]M. Bilenko and R. Mooney, “Joint embeddings of text and labels for multi-label classification,” in Proceedings of the 26th Annual International Conference on Machine Learning, 2003, pp. 89–96.</p>
+[1]Xin Dong, Lei Yu, Zhonghuo Wu, Wei Fan, Zhong Wang, and Jianzhou Yan. &ldquo;Label Embedding via Singular Value Decomposition.&rdquo; In Proceedings of the 20th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining, pp. 1097-1106. ACM, 2014.</p>
 <p>[2]Devlin, J., Chang, M. W., Lee, K., &amp; Toutanova, K. (2018). Bert: Pre-training of deep bidirectional transformers for language understanding. arXiv preprint arXiv:1810.04805.</p>
 <p>[3]Yang, Z., Dai, Z., Yang, Y., Carbonell, J. G., Salakhutdinov, R. R., &amp; Le, Q. V. (2019). XLNet: Generalized Autoregressive Pretraining for Language Understanding. arXiv preprint arXiv:1906.08237.</p>
 

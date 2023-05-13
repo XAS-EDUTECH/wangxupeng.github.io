@@ -518,7 +518,7 @@ Using the previous image as an example, we can see that each cell in the table h
   &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
 &lt;p&gt;From the above three graphs, it can be seen that &lt;strong&gt;the data follows a severe long-tailed distribution&lt;/strong&gt;. After reviewing numerous papers, we found that label embedding can effectively solve this problem.&lt;/p&gt;
-&lt;p&gt;After reviewing many papers, we finally found inspiration from joint label-text embeddings[1] and achieved good results.&lt;/p&gt;
+&lt;p&gt;After reviewing many papers, we finally found inspiration from joint label embeddings[1] and achieved good results.&lt;/p&gt;
 &lt;p&gt;Next, let&amp;rsquo;s take a look at the model&amp;rsquo;s input and labels.&lt;/p&gt;
 &lt;p&gt;In the model input, we not only input the text but also add the corresponding category labels into Bert[2] (the final model is XLnet[3]), as follows:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CLS&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Plaintiff&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Xie&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Chunyou&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;alleges&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;that&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;the&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;plaintiff&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;and&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;defendant&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;divorced&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;due&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;to&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;emotional&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;discord&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;March&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2014&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;and&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;the&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;court&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;of&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Hengyang&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;County&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ruled&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;that&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;the&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;girl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Zhou&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Yin&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;born&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;on&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;September&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2001&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;now&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;studying&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;at&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Zhengyang&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Middle&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;School&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Xidu&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Town&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Hengyang&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;County&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;born&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;of&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;the&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;marriage&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;should&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;be&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;raised&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;by&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;the&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;defendant&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SEP&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Having&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Children&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;After&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Marriage&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;...&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Personal&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Property&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;After&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Marriage&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SEP&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
@@ -630,10 +630,10 @@ As we can see, the addition of label embedding has significantly improved the pe
 &lt;figure  &gt;
   &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
     &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;hua.png&#34; srcset=&#34;
-               /project/legal-ai-challenge/hua_hu47f0d30799510983acda49a3523c070e_80184_1f941f2856fa7527032ceeba961b713d.webp 400w,
+               /project/legal-ai-challenge/hua_hu47f0d30799510983acda49a3523c070e_80184_4543ce492f6cec26519e2d8f48371789.webp 400w,
                /project/legal-ai-challenge/hua_hu47f0d30799510983acda49a3523c070e_80184_5d08d59e8926a6582fe057fd02885450.webp 760w,
                /project/legal-ai-challenge/hua_hu47f0d30799510983acda49a3523c070e_80184_1200x1200_fit_q75_h2_lanczos_3.webp 1200w&#34;
-               src=&#34;https://wangxupeng.github.io/project/legal-ai-challenge/hua_hu47f0d30799510983acda49a3523c070e_80184_1f941f2856fa7527032ceeba961b713d.webp&#34;
+               src=&#34;https://wangxupeng.github.io/project/legal-ai-challenge/hua_hu47f0d30799510983acda49a3523c070e_80184_4543ce492f6cec26519e2d8f48371789.webp&#34;
                width=&#34;760&#34;
                height=&#34;567&#34;
                loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
@@ -659,19 +659,20 @@ As we can see, the addition of label embedding has significantly improved the pe
 &lt;figure  &gt;
   &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
     &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;photo.jpg&#34; srcset=&#34;
-               /project/legal-ai-challenge/photo_hu778af1ec36bb3279dad62320ccebc55b_105563_459a7a3c279aef4d5e36b4476e016f66.webp 400w,
+               /project/legal-ai-challenge/photo_hu778af1ec36bb3279dad62320ccebc55b_105563_2bab771ee2087aded539f8af24242237.webp 400w,
                /project/legal-ai-challenge/photo_hu778af1ec36bb3279dad62320ccebc55b_105563_a6b829c960159333ca207894b9e65d97.webp 760w,
                /project/legal-ai-challenge/photo_hu778af1ec36bb3279dad62320ccebc55b_105563_1200x1200_fit_q75_h2_lanczos.webp 1200w&#34;
-               src=&#34;https://wangxupeng.github.io/project/legal-ai-challenge/photo_hu778af1ec36bb3279dad62320ccebc55b_105563_459a7a3c279aef4d5e36b4476e016f66.webp&#34;
+               src=&#34;https://wangxupeng.github.io/project/legal-ai-challenge/photo_hu778af1ec36bb3279dad62320ccebc55b_105563_2bab771ee2087aded539f8af24242237.webp&#34;
                width=&#34;570&#34;
                height=&#34;760&#34;
                loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
   &lt;/div&gt;&lt;/figure&gt;
 
 Thanks to the award we received, I caught the attention of the CEO and CTO of Nanjing Aerospace Smart Technology Co., Ltd. Eventually, I was invited to join the Aerospace Science and Technology AI Laboratory. Looking back, it was an amazing experience.&lt;/p&gt;
+&lt;p&gt;Project github: &lt;a href=&#34;https://github.com/wangxupeng/2019Legal-AI-Challenge-Legal-Case-Element-Recognition-solution&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://github.com/wangxupeng/2019Legal-AI-Challenge-Legal-Case-Element-Recognition-solution&lt;/a&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;p&gt;&lt;strong&gt;Reference&lt;/strong&gt;:
-[1]M. Bilenko and R. Mooney, “Joint embeddings of text and labels for multi-label classification,” in Proceedings of the 26th Annual International Conference on Machine Learning, 2003, pp. 89–96.&lt;/p&gt;
+[1]Xin Dong, Lei Yu, Zhonghuo Wu, Wei Fan, Zhong Wang, and Jianzhou Yan. &amp;ldquo;Label Embedding via Singular Value Decomposition.&amp;rdquo; In Proceedings of the 20th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining, pp. 1097-1106. ACM, 2014.&lt;/p&gt;
 &lt;p&gt;[2]Devlin, J., Chang, M. W., Lee, K., &amp;amp; Toutanova, K. (2018). Bert: Pre-training of deep bidirectional transformers for language understanding. arXiv preprint arXiv:1810.04805.&lt;/p&gt;
 &lt;p&gt;[3]Yang, Z., Dai, Z., Yang, Y., Carbonell, J. G., Salakhutdinov, R. R., &amp;amp; Le, Q. V. (2019). XLNet: Generalized Autoregressive Pretraining for Language Understanding. arXiv preprint arXiv:1906.08237.&lt;/p&gt;
 </description>
@@ -861,7 +862,7 @@ data.head()
 
 
 
-&lt;div id=&#34;chart-532871694&#34; class=&#34;chart&#34;&gt;&lt;/div&gt;
+&lt;div id=&#34;chart-819263475&#34; class=&#34;chart&#34;&gt;&lt;/div&gt;
 &lt;script&gt;
   (function() {
     let a = setInterval( function() {
@@ -871,7 +872,7 @@ data.head()
       clearInterval( a );
 
       Plotly.d3.json(&#34;./line-chart.json&#34;, function(chart) {
-        Plotly.plot(&#39;chart-532871694&#39;, chart.data, chart.layout, {responsive: true});
+        Plotly.plot(&#39;chart-819263475&#39;, chart.data, chart.layout, {responsive: true});
       });
     }, 500 );
   })();
