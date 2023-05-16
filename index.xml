@@ -862,11 +862,7 @@ data.head()
 
 
 
-<<<<<<< HEAD
-&lt;div id=&#34;chart-862193547&#34; class=&#34;chart&#34;&gt;&lt;/div&gt;
-=======
-&lt;div id=&#34;chart-624879135&#34; class=&#34;chart&#34;&gt;&lt;/div&gt;
->>>>>>> parent of e7ca27d (update20230516_v2)
+&lt;div id=&#34;chart-934281765&#34; class=&#34;chart&#34;&gt;&lt;/div&gt;
 &lt;script&gt;
   (function() {
     let a = setInterval( function() {
@@ -876,11 +872,7 @@ data.head()
       clearInterval( a );
 
       Plotly.d3.json(&#34;./line-chart.json&#34;, function(chart) {
-<<<<<<< HEAD
-        Plotly.plot(&#39;chart-862193547&#39;, chart.data, chart.layout, {responsive: true});
-=======
-        Plotly.plot(&#39;chart-624879135&#39;, chart.data, chart.layout, {responsive: true});
->>>>>>> parent of e7ca27d (update20230516_v2)
+        Plotly.plot(&#39;chart-934281765&#39;, chart.data, chart.layout, {responsive: true});
       });
     }, 500 );
   })();
